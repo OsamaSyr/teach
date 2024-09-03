@@ -34,30 +34,6 @@ function setCookie(name, value, days) {
   document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 
-function logMessage(message, isError = false) {
-  const logContainer = document.getElementById("logContainer");
-  if (!logContainer) {
-    const container = document.createElement("div");
-    container.id = "logContainer";
-    container.style.position = "fixed";
-    container.style.bottom = "10px";
-    container.style.right = "10px";
-    container.style.maxWidth = "300px";
-    container.style.maxHeight = "200px";
-    container.style.overflow = "auto";
-    container.style.backgroundColor = "rgba(0,0,0,0.7)";
-    container.style.color = "white";
-    container.style.padding = "10px";
-    container.style.borderRadius = "5px";
-    document.body.appendChild(container);
-  }
-
-  const logEntry = document.createElement("div");
-  logEntry.textContent = message;
-  logEntry.style.color = isError ? "red" : "white";
-  document.getElementById("logContainer").appendChild(logEntry);
-}
-
 function getCookie(name) {
   let nameEQ = name + "=";
   let ca = document.cookie.split(";");
@@ -102,6 +78,7 @@ if (window.location.pathname === "/student.html") {
       url: "/api/student/playlists",
       method: "GET",
       success: function (response) {
+        console.log("Playlists fetched:", response); // Log the response
         const playlists = response.playlists;
         let content = "";
         playlists.forEach((playlist) => {
@@ -118,11 +95,8 @@ if (window.location.pathname === "/student.html") {
         $("#playlistContainer").html(content);
       },
       error: function (xhr, status, error) {
-        const errorMessage = xhr.responseJSON
-          ? xhr.responseJSON.message
-          : error;
-        logMessage(`Failed to load playlists: ${errorMessage}`, true);
-        alert("Failed to load playlists. Check the log for details.");
+        console.error("Error fetching playlists:", status, error); // Log the error
+        alert("Failed to load playlists");
       },
     });
   }
