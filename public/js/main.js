@@ -73,7 +73,8 @@ $("#loginForm").on("submit", function (e) {
 
 // Load student playlists
 if (window.location.pathname === "/student.html") {
-  function loadPlaylists() {
+  function loadPlaylistss() {
+    console.log(" meowowoowow");
     $.ajax({
       url: "/api/student/playlists",
       method: "GET",
@@ -101,7 +102,7 @@ if (window.location.pathname === "/student.html") {
     });
   }
 
-  loadPlaylists();
+  loadPlaylistss();
 
   $(document).on("click", ".view-playlist-btn", function () {
     const playlistId = $(this).data("id");
@@ -227,6 +228,7 @@ if (window.location.pathname === "/admin.html") {
 
   // Load playlists
   function loadPlaylists() {
+    console.log(" meowowoowow adminn");
     $.ajax({
       url: "/api/admin/playlists",
       method: "GET",
