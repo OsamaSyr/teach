@@ -84,10 +84,11 @@ exports.deleteUserDevice = async (req, res) => {
 };
 
 exports.assignPlaylistToUser = async (req, res) => {
-  const { userId, playlistId } = req.body;
+  const { id } = req.params; // Get the user ID from the URL parameters
+  const { playlistId } = req.body; // Get the playlist ID from the request body
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -106,10 +107,10 @@ exports.assignPlaylistToUser = async (req, res) => {
 };
 
 exports.removePlaylistFromUser = async (req, res) => {
-  const { userId, playlistId } = req.body;
+  const { id, playlistId } = req.params;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -125,7 +126,6 @@ exports.removePlaylistFromUser = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 exports.getUserWithPlaylists = async (req, res) => {
   const { id } = req.params; // Assuming this is the MongoDB ObjectId
 
@@ -231,39 +231,39 @@ exports.updatePlaylist = async (req, res) => {
   }
 };
 
-exports.assignPlaylist = async (req, res) => {
-  const { userId, playlistId } = req.body;
+// exports.assignPlaylistToUser = async (req, res) => {
+//   const { userId, playlistId } = req.body;
 
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    user.playlists.push(playlistId);
-    await user.save();
-    res.status(200).json({ success: true });
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
+//   try {
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+//     user.playlists.push(playlistId);
+//     await user.save();
+//     res.status(200).json({ success: true });
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 
-exports.removePlaylist = async (req, res) => {
-  const { userId, playlistId } = req.body;
+// exports.removePlaylist = async (req, res) => {
+//   const { userId, playlistId } = req.body;
 
-  try {
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    user.playlists = user.playlists.filter(
-      (id) => id.toString() !== playlistId
-    );
-    await user.save();
-    res.status(200).json({ success: true });
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
+//   try {
+//     const user = await User.findById(userId);
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+//     user.playlists = user.playlists.filter(
+//       (id) => id.toString() !== playlistId
+//     );
+//     await user.save();
+//     res.status(200).json({ success: true });
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
 
 exports.getPlaylist = async (req, res) => {
   const { id } = req.params;
@@ -331,30 +331,30 @@ exports.removeVideoFromPlaylist = async (req, res) => {
   }
 };
 
-exports.rearrangeVideosInPlaylist = async (req, res) => {
-  const { playlistId, fromIndex, toIndex } = req.body;
+// exports.rearrangeVideosInPlaylist = async (req, res) => {
+//   const { playlistId, fromIndex, toIndex } = req.body;
 
-  try {
-    const playlist = await Playlist.findById(playlistId);
-    if (!playlist) {
-      return res.status(404).json({ message: "Playlist not found" });
-    }
+//   try {
+//     const playlist = await Playlist.findById(playlistId);
+//     if (!playlist) {
+//       return res.status(404).json({ message: "Playlist not found" });
+//     }
 
-    if (
-      fromIndex < 0 ||
-      fromIndex >= playlist.videos.length ||
-      toIndex < 0 ||
-      toIndex >= playlist.videos.length
-    ) {
-      return res.status(400).json({ message: "Invalid video index" });
-    }
+//     if (
+//       fromIndex < 0 ||
+//       fromIndex >= playlist.videos.length ||
+//       toIndex < 0 ||
+//       toIndex >= playlist.videos.length
+//     ) {
+//       return res.status(400).json({ message: "Invalid video index" });
+//     }
 
-    const [video] = playlist.videos.splice(fromIndex, 1);
-    playlist.videos.splice(toIndex, 0, video);
+//     const [video] = playlist.videos.splice(fromIndex, 1);
+//     playlist.videos.splice(toIndex, 0, video);
 
-    await playlist.save();
-    res.status(200).json({ success: true, playlist });
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
+//     await playlist.save();
+//     res.status(200).json({ success: true, playlist });
+//   } catch (err) {
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };

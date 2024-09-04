@@ -15,11 +15,10 @@ const {
   updatePlaylist,
   addPlaylist,
   deletePlaylist,
-  removePlaylist,
+  //   removePlaylist,
   getAllPlaylists,
   addVideoToPlaylist,
   removeVideoFromPlaylist,
-  rearrangeVideosInPlaylist,
 } = require("../controllers/adminController");
 
 const router = express.Router();
@@ -30,9 +29,9 @@ router.get("/users", protect, admin, getAllUsers);
 router.put("/user/:id", protect, admin, updateUser);
 router.get("/user/:id", protect, admin, getUser);
 router.get("/user/:id/playlists", protect, admin, getUserWithPlaylists);
-router.post("/user/:id/assign-playlist", protect, admin, assignPlaylistToUser);
-router.post(
-  "/user/:id/remove-playlist",
+router.post("/user/:id/playlists", protect, admin, assignPlaylistToUser);
+router.delete(
+  "/user/:id/playlists/:playlistId",
   protect,
   admin,
   removePlaylistFromUser
@@ -41,17 +40,11 @@ router.get("/user/:id/devices", protect, admin, getUserDevices);
 router.delete("/user/:id/devices/:device", protect, admin, deleteUserDevice);
 
 router.post("/playlist", protect, admin, addPlaylist);
-router.post("/playlist/remove", protect, admin, removePlaylist);
+// router.delete("/playlist/:id", protect, admin, removePlaylist);
 router.delete("/playlist/:id", protect, admin, deletePlaylist);
 
 router.post("/playlist/video", protect, admin, addVideoToPlaylist);
-router.post("/playlist/video/remove", protect, admin, removeVideoFromPlaylist);
-router.post(
-  "/playlist/video/rearrange",
-  protect,
-  admin,
-  rearrangeVideosInPlaylist
-);
+router.delete("/playlist/video/:id", protect, admin, removeVideoFromPlaylist);
 router.get("/playlists", protect, admin, getAllPlaylists);
 router.get("/playlist/:id", protect, admin, getPlaylist);
 router.put("/playlist/:id", protect, admin, updatePlaylist);

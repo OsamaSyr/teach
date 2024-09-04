@@ -461,7 +461,7 @@ if (window.location.pathname === "/admin.html") {
       .on("click", function () {
         const playlistId = $("#availablePlaylists").val();
         $.ajax({
-          url: `/api/admin/user/assign-playlist`,
+          url: `/api/admin/user/${userId}/playlists`,
           method: "POST",
           contentType: "application/json",
           data: JSON.stringify({ userId, playlistId }),
@@ -481,8 +481,8 @@ if (window.location.pathname === "/admin.html") {
       .on("click", ".remove-playlist-btn", function () {
         const playlistId = $(this).closest(".playlist-item").data("id");
         $.ajax({
-          url: `/api/admin/user/remove-playlist`,
-          method: "POST",
+          url: `/api/admin/user/${userId}/playlist/${playlistId}`,
+          method: "DELETE",
           contentType: "application/json",
           data: JSON.stringify({ userId, playlistId }),
           success: function () {

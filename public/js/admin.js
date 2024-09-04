@@ -226,11 +226,11 @@ $(document).ready(function () {
 
           user.playlists.forEach((playlist) => {
             assignedPlaylistsContainer.append(`
-                            <div class="playlist-item" data-id="${playlist._id}">
-                                <span>${playlist.title}</span>
-                                <button type="button" class="btn btn-danger btn-sm remove-playlist-btn">Remove</button>
-                            </div>
-                        `);
+              <div class="playlist-item" data-id="${playlist._id}">
+                <span>${playlist.title}</span>
+                <button type="button" class="btn btn-danger btn-sm remove-playlist-btn">Remove</button>
+              </div>
+            `);
           });
 
           $("#assignPlaylistModal").modal("show");
@@ -245,8 +245,8 @@ $(document).ready(function () {
 
               availablePlaylists.forEach((playlist) => {
                 availablePlaylistsDropdown.append(`
-                                    <option value="${playlist._id}">${playlist.title}</option>
-                                `);
+                  <option value="${playlist._id}">${playlist.title}</option>
+                `);
               });
             },
             error: function () {
@@ -265,13 +265,35 @@ $(document).ready(function () {
         .on("click", function () {
           const playlistId = $("#availablePlaylists").val();
           $.ajax({
-            url: `/api/admin/user/assign-playlist`,
+            url: `/api/admin/user/${userId}/playlists`,
             method: "POST",
             contentType: "application/json",
-            data: JSON.stringify({ userId, playlistId }),
+            data: JSON.stringify({ playlistId }),
             success: function () {
-              $("#assignPlaylistModal").modal("hide");
-              loadUsers();
+              // Reload the playlists
+              $.ajax({
+                url: `/api/admin/user/${userId}/playlists`,
+                method: "GET",
+                success: function (response) {
+                  const user = response.user;
+                  const assignedPlaylistsContainer = $(
+                    "#assignedPlaylistsContainer"
+                  );
+                  assignedPlaylistsContainer.empty();
+
+                  user.playlists.forEach((playlist) => {
+                    assignedPlaylistsContainer.append(`
+                      <div class="playlist-item" data-id="${playlist._id}">
+                        <span>${playlist.title}</span>
+                        <button type="button" class="btn btn-danger btn-sm remove-playlist-btn">Remove</button>
+                      </div>
+                    `);
+                  });
+                },
+                error: function () {
+                  alert("Failed to reload user playlists");
+                },
+              });
             },
             error: function () {
               alert("Failed to assign playlist");
@@ -285,83 +307,36 @@ $(document).ready(function () {
         .on("click", ".remove-playlist-btn", function () {
           const playlistId = $(this).closest(".playlist-item").data("id");
           $.ajax({
-            url: `/api/admin/user/remove-playlist`,
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ userId, playlistId }),
+            url: `/api/admin/user/${userId}/playlists/${playlistId}`,
+            method: "DELETE",
             success: function () {
-              $("#assignPlaylistModal").modal("hide");
-              loadUsers();
+              // Reload the playlists
+              $.ajax({
+                url: `/api/admin/user/${userId}/playlists`,
+                method: "GET",
+                success: function (response) {
+                  const user = response.user;
+                  const assignedPlaylistsContainer = $(
+                    "#assignedPlaylistsContainer"
+                  );
+                  assignedPlaylistsContainer.empty();
+
+                  user.playlists.forEach((playlist) => {
+                    assignedPlaylistsContainer.append(`
+                      <div class="playlist-item" data-id="${playlist._id}">
+                        <span>${playlist.title}</span>
+                        <button type="button" class="btn btn-danger btn-sm remove-playlist-btn">Remove</button>
+                      </div>
+                    `);
+                  });
+                },
+                error: function () {
+                  alert("Failed to reload user playlists");
+                },
+              });
             },
             error: function () {
               alert("Failed to remove playlist");
-            },
-          });
-        });
-    });
-
-    // Add Playlist Functionality
-    $("#addPlaylistBtn").on("click", function () {
-      $("#addPlaylistForm").trigger("reset");
-      $("#addVideoInputsContainer").empty(); // Clear any video input fields
-      $("#addPlaylistModal").modal("show");
-
-      $("#addNewVideoField")
-        .off("click")
-        .on("click", function () {
-          const index = $("#addVideoInputsContainer .video-input-group").length;
-          $("#addVideoInputsContainer").append(`
-                    <div class="form-group video-input-group" data-index="${index}">
-                        <label for="videoTitle_${index}">Video Title</label>
-                        <input type="text" id="videoTitle_${index}" class="form-control" required>
-                        <label for="videoUrl_${index}">Video URL</label>
-                        <input type="text" id="videoUrl_${index}" class="form-control" required>
-                        <button type="button" class="btn btn-danger remove-video-btn">Delete Video</button>
-                    </div>
-                `);
-        });
-
-      $("#addVideoInputsContainer")
-        .off("click", ".remove-video-btn")
-        .on("click", ".remove-video-btn", function () {
-          $(this).closest(".video-input-group").remove();
-        });
-
-      $("#addPlaylistForm")
-        .off("submit")
-        .on("submit", function (e) {
-          e.preventDefault();
-          const title = $("#newPlaylistTitle").val();
-          const videos = [];
-
-          $("#addVideoInputsContainer .video-input-group").each(function () {
-            const videoTitle = $(this).find('input[id^="videoTitle_"]').val();
-            const videoUrl = $(this).find('input[id^="videoUrl_"]').val();
-            if (videoTitle && videoUrl) {
-              videos.push({ title: videoTitle, url: videoUrl });
-            }
-          });
-
-          if (videos.length === 0) {
-            alert("Please add at least one video.");
-            return;
-          }
-
-          $.ajax({
-            url: "/api/admin/playlist",
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ title, videos }),
-            success: function () {
-              $("#addPlaylistModal").modal("hide");
-              loadPlaylists(); // Reload playlists after a successful addition
-            },
-            error: function (xhr) {
-              alert(
-                `Failed to add playlist: ${
-                  xhr.responseJSON.message || xhr.statusText
-                }`
-              );
             },
           });
         });
