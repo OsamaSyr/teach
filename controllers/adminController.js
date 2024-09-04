@@ -74,7 +74,7 @@ exports.deleteUserDevice = async (req, res) => {
 };
 
 exports.deleteUserDevice = async (req, res) => {
-  const { id, fingerprint } = req.params; // Changed 'device' to 'fingerprint'
+  const { id, device } = req.params; // `id` is the user ID and `device` is the device fingerprint
 
   try {
     const user = await User.findById(id);
@@ -82,9 +82,7 @@ exports.deleteUserDevice = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.devices = user.devices.filter(
-      (d) => d.fingerprint !== decodeURIComponent(fingerprint)
-    );
+    user.devices = user.devices.filter((d) => d !== decodeURIComponent(device));
 
     await user.save();
 

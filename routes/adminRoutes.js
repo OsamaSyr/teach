@@ -33,12 +33,7 @@ router.get("/user/:id/playlists", protect, admin, getUserWithPlaylists);
 router.post("/user/assign-playlist", protect, admin, assignPlaylistToUser);
 router.post("/user/remove-playlist", protect, admin, removePlaylistFromUser);
 router.get("/user/:id/devices", protect, admin, getUserDevices);
-router.delete(
-  "/user/:id/devices/:fingerprint",
-  protect,
-  admin,
-  deleteUserDevice
-);
+router.delete("/user/:id/devices/:device", protect, admin, deleteUserDevice);
 
 router.post("/playlist", protect, admin, addPlaylist);
 router.post("/playlist/remove", protect, admin, removePlaylist);
