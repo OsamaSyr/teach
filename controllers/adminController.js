@@ -62,7 +62,17 @@ exports.deleteUserDevice = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.devices = user.devices.filter((d) => d !== decodeURIComponent(device));
+    // Find the index of the device with the matching fingerprint
+    const deviceIndex = user.devices.findIndex(
+      (d) => d.fingerprint === decodeURIComponent(device)
+    );
+
+    if (deviceIndex === -1) {
+      return res.status(404).json({ message: "Device not found" });
+    }
+
+    // Remove the device from the array
+    user.devices.splice(deviceIndex, 1);
 
     await user.save();
 
