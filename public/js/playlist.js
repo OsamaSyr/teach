@@ -41,7 +41,7 @@ $(document).ready(function () {
           const videoPlayerContainer = $("#videoPlayerContainer");
           videoPlayerContainer.empty();
 
-          const vdoPlayer = `<iframe src="${videoUrl}" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+          const vdoPlayer = `<iframe src="${videoUrl}" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen allow="encrypted-media"></iframe>`;
           videoPlayerContainer.html(vdoPlayer);
         },
         error: function () {
