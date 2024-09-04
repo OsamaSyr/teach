@@ -36,17 +36,13 @@ $(document).ready(function () {
         url: `/api/student/playlists/${playlistId}/videos/${videoId}`,
         method: "GET",
         success: function (response) {
-          const videoUrl = response.video.url;
-
-          const absoluteVideoUrl = videoUrl.startsWith("http")
-            ? videoUrl
-            : `https://player.vimeo.com/video/${videoUrl}`;
+          const videoUrl = response.video.url; // URL provided by your API for the video
 
           const videoPlayerContainer = $("#videoPlayerContainer");
           videoPlayerContainer.empty();
 
-          const vimeoPlayer = `<iframe src="${absoluteVideoUrl}" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
-          videoPlayerContainer.html(vimeoPlayer);
+          const vdoPlayer = `<iframe src="${videoUrl}" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+          videoPlayerContainer.html(vdoPlayer);
         },
         error: function () {
           alert("Failed to load video details");
