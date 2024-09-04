@@ -37,11 +37,10 @@ $(document).ready(function () {
         method: "GET",
         success: function (response) {
           const videoUrl = response.video.url; // URL provided by your API for the video
-
+          console.log("meowod");
           const videoPlayerContainer = $("#videoPlayerContainer");
           videoPlayerContainer.empty();
-
-          const vdoPlayer = `<iframe src="${videoUrl}" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen allow="encrypted-media"></iframe>`;
+          const vdoPlayer = `<iframe allow="encrypted-media *;" src="${videoUrl}" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen"></iframe>`;
           videoPlayerContainer.html(vdoPlayer);
         },
         error: function () {
