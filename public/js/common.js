@@ -2,7 +2,7 @@ function getDeviceFingerprint() {
   let fingerprint = getCookie("deviceFingerprint");
   if (!fingerprint) {
     fingerprint = generateUUID();
-    setCookie("deviceFingerprint", fingerprint, 365); // Set cookie for 1 year
+    setCookie("deviceFingerprint", fingerprint, 365);
   }
 
   const deviceSpecs = {
