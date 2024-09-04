@@ -73,22 +73,24 @@ exports.deleteUserDevice = async (req, res) => {
   }
 };
 
-exports.deleteUserDevice = async (req, res) => {
-  const { id, device } = req.params; // `id` is the user ID and `device` is the device fingerprint
+exports.assignPlaylistToUser = async (req, res) => {
+  const { userId, playlistId } = req.body;
 
   try {
-    const user = await User.findById(id);
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.devices = user.devices.filter((d) => d !== decodeURIComponent(device));
+    // Check if playlist is already assigned
+    if (!user.playlists.includes(playlistId)) {
+      user.playlists.push(playlistId);
+      await user.save();
+    }
 
-    await user.save();
-
-    res.status(200).json({ success: true, devices: user.devices });
+    res.status(200).json({ success: true, playlists: user.playlists });
   } catch (err) {
-    console.error("Error deleting user device:", err);
+    console.error("Error assigning playlist:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
